@@ -1,15 +1,12 @@
-const express = require('express');
+import { Router } from 'express';
+import { authenticateApiRequest } from '../middlewares.js';
 
-const emojis = require('./emojis');
+const router = Router();
 
-const router = express.Router();
-
-router.get('/', (req, res) => {
+router.get('/', authenticateApiRequest, (req, res) => {
   res.json({
-    message: 'API - 👋🌎🌍🌏',
+    message: 'API is up.',
   });
 });
 
-router.use('/emojis', emojis);
-
-module.exports = router;
+export default router;

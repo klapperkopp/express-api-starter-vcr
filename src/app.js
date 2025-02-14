@@ -1,29 +1,39 @@
-const express = require('express');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const cors = require('cors');
+import express, { json } from 'express';
+import morgan from 'morgan';
+import helmet from 'helmet';
+import cors from 'cors';
+import dotenv from "dotenv"
+dotenv.config();
 
-require('dotenv').config();
-
-const middlewares = require('./middlewares');
-const api = require('./api');
+import { notFound, errorHandler } from './middlewares.js';
+import api from './api/index.js';
 
 const app = express();
 
+// mount middelware
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
-app.use(express.json());
+app.use(json());
 
+// mount base path
 app.get('/', (req, res) => {
   res.json({
-    message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',
+    message: 'Server is up.',
   });
 });
 
+
+// mount VCR health check endpoints
+app.use(["/_/metrics", "/_/health"], (req, res) => {
+  res.sendStatus(200)
+});
+
+// mount API endpoints
 app.use('/api/v1', api);
 
-app.use(middlewares.notFound);
-app.use(middlewares.errorHandler);
+// mount error middlewares
+app.use(notFound);
+app.use(errorHandler);
 
-module.exports = app;
+export default app;

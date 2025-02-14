@@ -1,6 +1,6 @@
-const request = require('supertest');
+import request from 'supertest';
 
-const app = require('../src/app');
+import app from '../src/app';
 
 describe('app', () => {
   it('responds with a not found message', (done) => {
